@@ -237,6 +237,51 @@ This can occur for two reasons:
 3. If the AI app supports manual OAuth configuration (such as ChatGPT's user-defined OAuth client), enter the authorization and token endpoints manually rather than relying on automatic discovery.
 4. Using [Home Assistant Cloud](/integrations/cloud/) (`https://<your-id>.ui.nabu.casa`) avoids reverse-proxy and tunnel configuration pitfalls because it automatically handles canonical hostnames and SSL termination.
 
+### Connection and access problems
+
+#### Symptom: The AI app gets a "404 Not Found" error from the MCP server URL
+
+The AI app can't connect, and the response says "Model Context Protocol server is not configured" or "Found multiple Model Context Protocol configurations".
+
+##### Description
+
+The MCP server only answers when exactly one **Model Context Protocol** integration entry is set up and loaded. It answers with this error when the integration was never enabled, when the entry is disabled, or when there is more than one entry.
+
+##### Resolution
+
+1. Go to {% my config_ai title="**Settings** > **System** > **AI**" %}. If the **Model Context Protocol** card shows an **Enable** button, select it.
+2. Go to {% my integrations title="**Settings** > **Devices & services**" %} and select the **Model Context Protocol** integration. Make sure there is one entry, and that it is enabled.
+
+#### Symptom: The AI app gets a "403 Forbidden" error, or isn't allowed to use AI tools
+
+The AI app signs in, but Home Assistant refuses the connection or the AI tools.
+
+##### Description
+
+**Require an administrator account** is turned on, and the account you signed in with in the AI app is not an administrator. The **Home Assistant** set of {% term "AI tools" %} always requires an administrator account, also when this option is turned off, so the main URL needs one whenever it exposes that set, for example with **Expose all AI tools**.
+
+##### Resolution
+
+- Sign in to the AI app with an administrator account.
+- Or, to use a non-administrator account, change the [configuration options](#configuration-options) of the main URL: turn off **Expose all AI tools**, select only **Device control** under **AI tools**, and turn off **Require an administrator account**. You can also use the **Device control** URL listed under **Individual URLs**, which doesn't require an administrator account.
+
+### The AI app can't find or control a device
+
+#### Symptom: The AI app says a device doesn't exist, or that it can't change it
+
+The AI app answers questions about your home but can't find a device you ask about, or it can read a device but not control it.
+
+##### Description
+
+- **Device control** only reads and controls the {% term entities %} you expose to voice assistants. Entities that are not exposed don't exist for the AI app.
+- With **Read-only** turned on, the main URL leaves out every AI tool that changes something, so the AI app can see your devices but not control them.
+
+##### Resolution
+
+1. Expose the entity on the {% my voice_assistants title="exposed entities page" %}. For more information, refer to [exposing your devices](/voice_control/voice_remote_expose_devices/).
+2. If the AI app should be able to control devices, check that **Read-only** is turned off in the [configuration options](#configuration-options).
+3. If the AI app still doesn't find the device, start a new chat.
+
 ## Removing the integration
 
 This integration can be removed by following these steps:
